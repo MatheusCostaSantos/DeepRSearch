@@ -1,0 +1,40 @@
+# ===== Segredos (NUNCA versionar) =====
+.env
+.env.*
+!.env.example
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# ===== Ambientes virtuais =====
+venv/
+.venv/
+env/
+ENV/
+
+# ===== Testes e ferramentas =====
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ===== Logs =====
+*.log
+logs/
+
+# ===== Editores / IDEs =====
+.vscode/
+.idea/
+*.swp
+
+# ===== Sistema operacional =====
+.DS_Store
+Thumbs.db
+Desktop.ini
