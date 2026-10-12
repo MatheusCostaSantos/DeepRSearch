@@ -1,0 +1,45 @@
+# ===== Segredos (nunca entram na imagem) =====
+.env
+.env.*
+
+# ===== Git e Docker =====
+.git
+.gitignore
+.dockerignore
+Dockerfile
+
+# ===== Python =====
+**/__pycache__
+**/*.pyc
+**/*.pyo
+*.egg-info
+build/
+dist/
+
+# ===== Ambientes virtuais =====
+venv/
+.venv/
+env/
+
+# ===== Testes e ferramentas =====
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ===== Editores / sistema =====
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ===== Logs e arquivos que não rodam no servidor =====
+*.log
+logs/
+*.zip
+*.md
+registrar_comandos.py
+registrar_webhook_telegram.py
+prompts.md

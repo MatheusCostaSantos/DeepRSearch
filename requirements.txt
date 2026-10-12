@@ -4,3 +4,4 @@ httpx
 openai
 pydantic
 pydantic-settings
+pynacl

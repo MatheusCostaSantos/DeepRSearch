@@ -3,7 +3,7 @@ import re
 import httpx
 
 from domain.interfaces import PesquisaInterface
-from domain.modelos import FiltroBusca, Oferta, _para_numero
+from domain.modelos import FiltroBusca, Mercado, Oferta, _para_numero
 
 URL = "https://serpapi.com/search.json"
 
@@ -23,21 +23,24 @@ def _parcelamento(dado) -> tuple[int | None, float | None]:
         return None, None  # parcelamento com entrada: o cálculo ficaria enganoso
 
     texto_preco = str(dado.get("price") or "")
-
     valor = _para_numero(dado.get("extracted_price"))
-    if valor is None:
-        achado = re.search(r"R\$\s*([\d.]+,\d{2})", texto_preco)
-        valor = _para_numero(achado.group(1)) if achado else None
+    parcelas = None
 
     periodo = dado.get("period")
-    parcelas = None
     if isinstance(periodo, int):
         parcelas = periodo
     elif isinstance(periodo, str) and re.search(r"\d+", periodo):
         parcelas = int(re.search(r"\d+", periodo).group())
-    else:
-        achado = re.search(r"(\d{1,2})\s*x", texto_preco, re.IGNORECASE)
-        parcelas = int(achado.group(1)) if achado else None
+
+    # Textos como "12x R$ 291,58" ou "12x de €41,66"
+    achado = re.search(r"(\d{1,2})\s*x\D*(\d[\d.,]*)", texto_preco, re.IGNORECASE)
+    if achado:
+        if parcelas is None:
+            parcelas = int(achado.group(1))
+        if valor is None:
+            valor = _para_numero(achado.group(2))
+    elif valor is None:
+        valor = _para_numero(texto_preco)  # texto só com o valor, ex: "R$ 291,58"
 
     if valor and parcelas and parcelas > 1:
         return parcelas, valor
@@ -65,18 +68,18 @@ def converter_item(item: dict) -> Oferta | None:
 
 
 class PesquisaSerpApi(PesquisaInterface):
-    """Busca no Google Shopping (Brasil) via SerpApi. Cada pedido gasta 1 busca do plano."""
+    """Busca no Google Shopping do país escolhido via SerpApi. Cada pedido gasta 1 busca do plano."""
 
     def __init__(self, api_key: str):
         self.api_key = api_key
 
-    async def pesquisar(self, filtro: FiltroBusca) -> list[Oferta]:
+    async def pesquisar(self, filtro: FiltroBusca, mercado: Mercado) -> list[Oferta]:
         parametros = {
             "engine": "google_shopping",
             "q": " ".join([filtro.produto, *filtro.deve_conter]),
-            "google_domain": "google.com.br",
-            "gl": "br",
-            "hl": "pt-br",
+            "google_domain": mercado.google_domain,
+            "gl": mercado.gl,
+            "hl": mercado.hl,
             "api_key": self.api_key,
         }
 

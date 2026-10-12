@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from .modelos import FiltroBusca, Oferta
+from .modelos import FiltroBusca, Mercado, Oferta
 
 
 class FiltroEntradaInterface(ABC):
@@ -10,7 +10,7 @@ class FiltroEntradaInterface(ABC):
 
 class PesquisaInterface(ABC):
     @abstractmethod
-    async def pesquisar(self, filtro: FiltroBusca) -> list[Oferta]: ...
+    async def pesquisar(self, filtro: FiltroBusca, mercado: Mercado) -> list[Oferta]: ...
 
 
 class FiltroSaidaInterface(ABC):

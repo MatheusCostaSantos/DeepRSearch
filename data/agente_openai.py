@@ -9,22 +9,38 @@ PROMPT_ENTRADA = """Você recebe o pedido de um usuário e devolve APENAS um JSO
 
 Regras:
 - "produto": texto com o nome do produto, como se escreve numa busca (ex: "PlayStation 5").
+  Não inclua aqui o país nem palavras como "comprar".
+- "pais": código ISO de 2 letras, em minúsculas, do país onde o usuário quer comprar
+  (ex: "pt" para Portugal, "us" para Estados Unidos, "br" para Brasil). Se o usuário não
+  citar nenhum país, use "".
 - "lojas": LISTA de lojas SOMENTE se o usuário pediu lojas específicas (ex: ["Amazon"]).
   Caso contrário, deixe a lista vazia.
 - "deve_conter": LISTA de textos com especificações pedidas pelo usuário (ex: ["128GB"]).
 - "nao_deve_conter": LISTA de palavras para excluir acessórios e peças
   (ex: ["capa", "película", "carregador"]).
-- "preco_minimo" e "preco_maximo": número ou null.
+- "preco_minimo" e "preco_maximo": número na moeda do país pedido, ou null.
 - Campos de lista devem ser SEMPRE listas JSON, mesmo com um só item ou vazios.
 
-Exemplo de resposta:
+Exemplo 1 - pedido: "iPhone 15 128GB"
 {
   "produto": "iPhone 15",
+  "pais": "",
   "lojas": [],
   "deve_conter": ["128GB"],
   "nao_deve_conter": ["capa", "película", "carregador"],
   "preco_minimo": null,
   "preco_maximo": null
+}
+
+Exemplo 2 - pedido: "Quero comprar um PS5 em Portugal por até 500 euros"
+{
+  "produto": "PlayStation 5",
+  "pais": "pt",
+  "lojas": [],
+  "deve_conter": [],
+  "nao_deve_conter": ["capa", "jogo", "controle", "acessório"],
+  "preco_minimo": null,
+  "preco_maximo": 500
 }"""
 
 PROMPT_SAIDA = """Você recebe o pedido do usuário e uma lista de resultados do Google Shopping,
